@@ -19,6 +19,7 @@ public class ShipController : MonoBehaviour {
         handleLinearControls();
         handleTorqueControls();
         handleAngularDampening();
+        handleTimeControls();
 	}
 
     private void handleLinearControls()
@@ -26,6 +27,26 @@ public class ShipController : MonoBehaviour {
         if (Input.GetKey(KeyCode.I))
         {
             _target.AddRelativeForce(Vector3.forward);
+        }
+        if (Input.GetKey(KeyCode.K))
+        {
+            _target.AddRelativeForce(Vector3.back);
+        }
+        if (Input.GetKey(KeyCode.J))
+        {
+            _target.AddRelativeForce(Vector3.left);
+        }
+        if (Input.GetKey(KeyCode.L))
+        {
+            _target.AddRelativeForce(Vector3.right);
+        }
+        if (Input.GetKey(KeyCode.U))
+        {
+            _target.AddRelativeForce(Vector3.up);
+        }
+        if (Input.GetKey(KeyCode.O))
+        {
+            _target.AddRelativeForce(Vector3.down);
         }
     }
 
@@ -72,6 +93,18 @@ public class ShipController : MonoBehaviour {
             {
                 _target.AddTorque(-1 * TorquePower * _target.angularVelocity.normalized);
             }
+        }
+    }
+
+    private void handleTimeControls()
+    {
+        if (Input.GetKeyDown(KeyCode.KeypadPlus))
+        {
+            Time.timeScale *= 2;
+        }
+        if (Input.GetKeyDown(KeyCode.KeypadMinus))
+        {
+            Time.timeScale /= 2;
         }
     }
 }
