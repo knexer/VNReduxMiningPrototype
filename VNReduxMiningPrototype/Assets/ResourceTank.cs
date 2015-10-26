@@ -10,6 +10,7 @@ public class ResourceTank : MonoBehaviour {
     public Text Display;
 
     public float Stored { get; private set; }
+    public float RemainingCapacity { get { return Capacity - Stored; } }
 
     public float BestEffortStore(float amount)
     {
