@@ -44,8 +44,8 @@ public class ResourceAutoExtractor : MonoBehaviour {
         if (closest != null)
         {
             float amountToTransfer = Mathf.Min(TransferRate * Time.deltaTime, closest.Stored, _tank.RemainingCapacity);
-            closest.BestEffortExtract(amountToTransfer);
-            _tank.BestEffortStore(amountToTransfer);
+            closest.tryExtract(amountToTransfer);
+            _tank.tryStore(amountToTransfer);
         }
 	}
 }
