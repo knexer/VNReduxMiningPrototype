@@ -7,6 +7,11 @@ public class ControlManager : MonoBehaviour {
     
 	void Start () {
         enabledControls = new HashSet<ControlScheme>();
+
+        Ship.ShipSelected += new Ship.ShipSelectionEventHandler((ship) => {
+            clearControlSchemes();
+            enableControlScheme(ship.getControlScheme());
+        });
 	}
 	
 	void Update () {
@@ -31,15 +36,15 @@ public class ControlManager : MonoBehaviour {
         }
 	}
 
-    public void enableControlScheme(ControlScheme controlScheme) {
+    private void enableControlScheme(ControlScheme controlScheme) {
         enabledControls.Add(controlScheme);
     }
 
-    public void disableControlScheme(ControlScheme controlScheme) {
+    private void disableControlScheme(ControlScheme controlScheme) {
         enabledControls.Remove(controlScheme);
     }
 
-    public void clearControlSchemes() {
+    private void clearControlSchemes() {
         enabledControls.Clear();
     }
 }

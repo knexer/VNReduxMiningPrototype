@@ -7,13 +7,8 @@ public class ShipSelectorButton : MonoBehaviour {
 
     private Ship ship;
 
-    private CameraController cameraController;
-    private ControlManager controlManager;
-
 	void Start () {
         GetComponent<Button>().onClick.AddListener(() => { switchToShip(); });
-        controlManager = GameObject.FindObjectOfType<ControlManager>();
-        cameraController = GameObject.FindObjectOfType<CameraController>();
     }
 	
 	// Update is called once per frame
@@ -27,9 +22,6 @@ public class ShipSelectorButton : MonoBehaviour {
     }
 
     private void switchToShip() {
-        GameObject.FindObjectOfType<CameraController>().follow(ship.gameObject);
-        controlManager.clearControlSchemes();
-        controlManager.enableControlScheme(ship.GetComponent<ShipControlScheme>());
-        cameraController.follow(ship.gameObject);
+        ship.select();
     }
 }

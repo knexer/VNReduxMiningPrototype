@@ -6,6 +6,12 @@ class CameraController : MonoBehaviour {
 
     public Vector3 followOffset;
 
+    void Start() {
+        Ship.ShipSelected += new Ship.ShipSelectionEventHandler((ship) => {
+            follow(ship.gameObject);
+        });
+    }
+
     public void follow(GameObject obj) {
         transform.rotation = obj.transform.rotation;
         transform.position = obj.transform.position + followOffset;

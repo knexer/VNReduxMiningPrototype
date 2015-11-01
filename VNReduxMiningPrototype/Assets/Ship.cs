@@ -3,6 +3,9 @@ using System.Collections;
 
 public class Ship : MonoBehaviour {
 
+    public delegate void ShipSelectionEventHandler(Ship selectedShip);
+    public static event ShipSelectionEventHandler ShipSelected;
+
     public string shipName;
 
     private ControlScheme controlScheme;
@@ -19,5 +22,10 @@ public class Ship : MonoBehaviour {
 
     public ControlScheme getControlScheme() {
         return controlScheme;
+    }
+
+    public void select() {
+
+        ShipSelected(this);
     }
 }
