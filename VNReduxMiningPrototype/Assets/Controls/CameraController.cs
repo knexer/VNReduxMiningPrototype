@@ -4,9 +4,11 @@ using UnityEngine;
 
 class CameraController : MonoBehaviour {
 
-    public void follow(GameObject obj, Vector3 offset) {
+    public Vector3 followOffset;
+
+    public void follow(GameObject obj) {
         transform.rotation = obj.transform.rotation;
-        transform.position = obj.transform.position + offset;
+        transform.position = obj.transform.position + followOffset;
         transform.parent = obj.transform;
     }
 

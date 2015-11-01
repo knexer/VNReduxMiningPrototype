@@ -38,4 +38,8 @@ public class ControlManager : MonoBehaviour {
     public void disableControlScheme(ControlScheme controlScheme) {
         enabledControls.Remove(controlScheme);
     }
+
+    public void clearControlSchemes() {
+        enabledControls.Clear();
+    }
 }
