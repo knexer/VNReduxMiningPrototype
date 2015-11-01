@@ -7,6 +7,7 @@ using System.Collections.Generic;
 public class Shipyard : MonoBehaviour {
 
     public ShipCost[] BuildableShips;
+    public Transform SpawnLocation;
     public GameObject ButtonPrefab;
     public GameObject ButtonParent;
 
@@ -39,9 +40,9 @@ public class Shipyard : MonoBehaviour {
         {
             if (Time.time >= _constructionQueue.Peek().EndTime)
             {
-                // TODO finish construction
-                Debug.Log("Construction finished on " + _constructionQueue.Peek().Ship.name);
-                _constructionQueue.Dequeue();
+                ShipCost completed = _constructionQueue.Dequeue().Ship;
+                Instantiate(completed.Prefab, SpawnLocation.position, SpawnLocation.rotation);
+                Debug.Log("Construction finished on " + completed.name);
             }
         }
 	}
