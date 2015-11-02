@@ -13,6 +13,37 @@ public class ResourceTank : MonoBehaviour {
     public int Stored { get; private set; }
     public int RemainingCapacity { get { return Capacity - Stored; } }
 
+    public ResourceTank()
+    {
+        Stored = 0;
+    }
+
+    void Awake()
+    {
+        ResourceTankAggregator aggregator = GetComponent<ResourceTankAggregator>();
+        if (null == aggregator) aggregator = gameObject.AddComponent<ResourceTankAggregator>();
+        aggregator.RegisterTank(this);
+    }
+
+    void OnDestroy()
+    {
+        ResourceTankAggregator aggregator = GetComponent<ResourceTankAggregator>();
+        if (null != aggregator)
+        {
+            aggregator.DeregisterTank(this);
+        }
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        // TODO update this only when stored changes?
+        if (Display != null)
+        {
+            Display.text = Type.ToString() + ": " + Stored;
+        }
+    }
+
     /// <summary>
     /// Attempt to store resources in the tank - as much as possible, up to amount.
     /// </summary>
@@ -39,28 +70,4 @@ public class ResourceTank : MonoBehaviour {
         Stored -= taken;
         return taken;
     }
-
-	// Use this for initialization
-	void Start () {
-        Stored = 0;
-        ResourceTankAggregator aggregator = GetComponent<ResourceTankAggregator>();
-        if (null == aggregator) aggregator = gameObject.AddComponent<ResourceTankAggregator>();
-        aggregator.RegisterTank(this);
-	}
-
-    void OnDestroy() {
-        ResourceTankAggregator aggregator = GetComponent<ResourceTankAggregator>();
-        if(null != aggregator) {
-            aggregator.DeregisterTank(this);
-        }
-    }
-	
-	// Update is called once per frame
-	void Update () {
-        // TODO update this only when stored changes?
-        if (Display != null)
-        {
-            Display.text = Type.ToString() + ": " + Stored;
-        }
-	}
 }
