@@ -13,6 +13,8 @@ public class Ship : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         ControlScheme = gameObject.GetComponent<ShipControlScheme>();
+        Rigidbody rigidbody = GetComponent<Rigidbody>();
+        if (null != rigidbody) rigidbody.sleepThreshold = 0;
 	}
 	
 	// Update is called once per frame
