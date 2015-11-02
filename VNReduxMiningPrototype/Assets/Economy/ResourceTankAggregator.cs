@@ -11,7 +11,7 @@ public class ResourceTankAggregator : MonoBehaviour {
 
     public void RegisterTank(ResourceTank tank) {
         if (null == tank) return;
-        if (null == tanks[tank.Type]) {
+        if (!tanks.ContainsKey(tank.Type)) {
             tanks[tank.Type] = new HashSet<ResourceTank>();
         }
         tanks[tank.Type].Add(tank);
@@ -19,7 +19,7 @@ public class ResourceTankAggregator : MonoBehaviour {
 
     public void DeregisterTank(ResourceTank tank) {
         if (null == tank) return;
-        if (null == tanks[tank.Type]) return;
+        if (!tanks.ContainsKey(tank.Type)) return;
         tanks[tank.Type].Remove(tank);
     }
 
@@ -66,5 +66,10 @@ public class ResourceTankAggregator : MonoBehaviour {
             remainingCapacity += tank.RemainingCapacity;
         }
         return remainingCapacity;
+    }
+
+    public IEnumerable<Resource> StoreableResources()
+    {
+        return tanks.Keys;
     }
 }
