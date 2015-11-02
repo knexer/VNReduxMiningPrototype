@@ -8,21 +8,17 @@ public class Ship : MonoBehaviour {
 
     public string shipName;
 
-    private ControlScheme controlScheme;
+    public ControlScheme ControlScheme { get; private set; }
 
 	// Use this for initialization
 	void Start () {
-        controlScheme = gameObject.AddComponent<ShipControlScheme>(); // TODO: allow editing control scheme on ship
+        ControlScheme = gameObject.GetComponent<ShipControlScheme>();
 	}
 	
 	// Update is called once per frame
 	void Update () {
 	
 	}
-
-    public ControlScheme getControlScheme() {
-        return controlScheme;
-    }
 
     public void select() {
 

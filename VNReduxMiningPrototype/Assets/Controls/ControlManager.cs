@@ -10,7 +10,7 @@ public class ControlManager : MonoBehaviour {
 
         Ship.ShipSelected += new Ship.ShipSelectionEventHandler((ship) => {
             clearControlSchemes();
-            enableControlScheme(ship.getControlScheme());
+            enableControlScheme(ship.ControlScheme);
         });
 	}
 	
