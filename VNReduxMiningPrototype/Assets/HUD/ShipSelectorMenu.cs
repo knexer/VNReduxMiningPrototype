@@ -30,8 +30,9 @@ class ShipSelectorMenu : MonoBehaviour {
     }
 
     private void findShips() {
-        while (content.transform.childCount > 0) {
-            Destroy(content.transform.GetChild(0));
+        for (int i = 0; i < content.transform.childCount; i++)
+        {
+            Destroy(content.transform.GetChild(i).gameObject);
         }
 
         Ship[] ships = FindObjectsOfType<Ship>();
