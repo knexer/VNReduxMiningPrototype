@@ -34,7 +34,7 @@ public class AsteroidMiner : MonoBehaviour {
         {
             if (_tank != null && _tank.Stored < _tank.Capacity)
             {
-                _tank.tryStore(MiningRate * Time.deltaTime);
+                _tank.tryStore((int)(MiningRate * Time.deltaTime));
             }
         }
     }

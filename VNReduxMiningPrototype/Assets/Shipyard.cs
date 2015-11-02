@@ -68,7 +68,7 @@ public class Shipyard : MonoBehaviour {
         }
 
         // consume resources
-        float remainingCost = ship.Cost;
+        int remainingCost = ship.Cost;
         foreach (ResourceTank tank in tanks)
         {
             if (tank.Type == ship.Type)
@@ -109,7 +109,7 @@ public class Shipyard : MonoBehaviour {
         public GameObject Prefab;
         public string name;
 
-        public float Cost;
+        public int Cost;
         public Resource Type;
         public float Time;
 

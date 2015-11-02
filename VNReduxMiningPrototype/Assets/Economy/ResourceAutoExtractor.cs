@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System;
 
 public class ResourceAutoExtractor : MonoBehaviour {
     public Resource Type;
@@ -43,7 +44,9 @@ public class ResourceAutoExtractor : MonoBehaviour {
 
         if (closest != null)
         {
-            float amountToTransfer = Mathf.Min(TransferRate * Time.deltaTime, closest.Stored, _tank.RemainingCapacity);
+            int amountToTransfer = Math.Min(
+                (int)(TransferRate * Time.deltaTime),
+                Math.Min(closest.Stored, _tank.RemainingCapacity));
             closest.tryExtract(amountToTransfer);
             _tank.tryStore(amountToTransfer);
         }
