@@ -37,7 +37,9 @@ public class ControlManager : MonoBehaviour {
 	}
 
     private void enableControlScheme(ControlScheme controlScheme) {
-        enabledControls.Add(controlScheme);
+        if (controlScheme != null) {
+            enabledControls.Add(controlScheme);
+        }
     }
 
     private void disableControlScheme(ControlScheme controlScheme) {
