@@ -6,17 +6,14 @@ public class AsteroidMiner : MonoBehaviour {
     public float MiningDistance;
     public float MiningRate;
 
-    private ResourceTank _tank;
+    private ResourceTankAggregator _tanks;
     private Mineable _target;
     private float _sqMiningDistance;
+    private float _progress = 0;
 
 	// Use this for initialization
 	void Start () {
-        ResourceTank[] tanks = GetComponents<ResourceTank>();
-        foreach(ResourceTank tank in tanks)
-        {
-            if (tank.Type == Resource.ORE) _tank = tank;
-        }
+        _tanks = GetComponent<ResourceTankAggregator>();
         _sqMiningDistance = MiningDistance * MiningDistance;
 	}
 
@@ -32,9 +29,15 @@ public class AsteroidMiner : MonoBehaviour {
 
         if(_target != null)
         {
-            if (_tank != null && _tank.Stored < _tank.Capacity)
+            if (_tanks != null && _tanks.RemainingCapacityFor(Resource.ORE) > 0)
             {
-                _tank.tryStore((int)(MiningRate * Time.deltaTime));
+                _progress += MiningRate * Time.deltaTime;
+                int storeableAmount = (int)_progress;
+                if (storeableAmount > 0)
+                {
+                    _progress -= storeableAmount;
+                    _tanks.TryStore(Resource.ORE, storeableAmount);
+                }
             }
         }
     }

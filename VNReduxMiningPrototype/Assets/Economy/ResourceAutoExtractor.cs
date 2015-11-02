@@ -9,46 +9,48 @@ public class ResourceAutoExtractor : MonoBehaviour {
     public float TransferRange;
     public float TransferRate;
 
-    private ResourceTank _tank;
+    private ResourceTankAggregator _tanks;
+    private float _progress = 0;
 
 	// Use this for initialization
 	void Start () {
-        ResourceTank[] tanks = GetComponents<ResourceTank>();
-        foreach (ResourceTank tank in tanks)
-        {
-            if (tank.Type == Type)
-            {
-                _tank = tank;
-            }
-        }
+        _tanks = GetComponent<ResourceTankAggregator>();
 	}
 	
 	// Update is called once per frame
 	void Update () {
-        IList<ResourceTank> allTanks = new List<ResourceTank>(FindObjectsOfType<ResourceTank>());
+        IList<ResourceTankAggregator> allTanks = new List<ResourceTankAggregator>(FindObjectsOfType<ResourceTankAggregator>());
 
         float minDistance = float.MaxValue;
-        ResourceTank closest = null;
-        foreach (ResourceTank tank in allTanks
-            .Where<ResourceTank>((tank) => tank.Type == Type)
-            .Where<ResourceTank>((tank) => tank.transform.root != transform.root)
-            .Where<ResourceTank>((tank) => tank.Stored > 0))
+        ResourceTankAggregator closest = null;
+        foreach (
+            ResourceTankAggregator tanks in allTanks
+            .Where<ResourceTankAggregator>((tanks) => tanks.StoreableResources().Contains(Type))
+            .Where<ResourceTankAggregator>((tanks) => tanks.transform.root != transform.root)
+            .Where<ResourceTankAggregator>((tanks) => tanks.StoredOf(Type) > 0)
+            )
         {
-            float sqDistance = (tank.transform.position - transform.position).sqrMagnitude;
+            float sqDistance = (tanks.transform.position - transform.position).sqrMagnitude;
             if (sqDistance < TransferRange * TransferRange && sqDistance < minDistance)
             {
                 minDistance = sqDistance;
-                closest = tank;
+                closest = tanks;
             }
         }
 
         if (closest != null)
         {
-            int amountToTransfer = Math.Min(
-                (int)(TransferRate * Time.deltaTime),
-                Math.Min(closest.Stored, _tank.RemainingCapacity));
-            closest.tryExtract(amountToTransfer);
-            _tank.tryStore(amountToTransfer);
+            _progress += TransferRate * Time.deltaTime;
+            if (_progress >= 1)
+            {
+                int amountToTransfer = (int)_progress;
+                _progress -= amountToTransfer;
+                amountToTransfer = Math.Min(
+                     amountToTransfer,
+                     Math.Min(closest.StoredOf(Type), _tanks.RemainingCapacityFor(Type)));
+                closest.TryExtract(Type, amountToTransfer);
+                _tanks.TryStore(Type, amountToTransfer);
+            }
         }
 	}
 }
