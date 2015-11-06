@@ -8,8 +8,6 @@ public class Shipyard : MonoBehaviour {
 
     public ShipCost[] BuildableShips;
     public Transform SpawnLocation;
-    public GameObject ButtonPrefab;
-    public GameObject ButtonParent;
 
     private Queue<ConstructionOrder> _constructionQueue;
     private float _queueCompletionTime;
@@ -21,17 +19,7 @@ public class Shipyard : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        foreach (ShipCost ship in BuildableShips)
-        {
-            GameObject button = Instantiate<GameObject>(ButtonPrefab);
-            button.transform.parent = ButtonParent.transform;
-            button.GetComponentInChildren<Text>().text = ship.message;
 
-            // gotta declare a new ShipCost inside each loop iteration since C# closures are lexical
-            // fuckin gets me every time
-            ShipCost lexicallyEnclosedShip = ship;
-            button.GetComponent<Button>().onClick.AddListener(() => { tryEnqueueShip(lexicallyEnclosedShip); });
-        }
 	}
 	
 	// Update is called once per frame
@@ -42,14 +30,14 @@ public class Shipyard : MonoBehaviour {
             {
                 ShipCost completed = _constructionQueue.Dequeue().Ship;
                 Instantiate(completed.Prefab, SpawnLocation.position, SpawnLocation.rotation);
-                Debug.Log("Construction finished on " + completed.name);
+                Debug.Log("Construction finished on " + completed.Name);
             }
         }
 	}
 
-    void tryEnqueueShip(ShipCost ship)
+    public void tryEnqueueShip(ShipCost ship)
     {
-        Debug.Log("Attempting to enqueue a " + ship.name);
+        Debug.Log("Attempting to enqueue a " + ship.Name);
         // check resource costs
         ResourceTank[] tanks = GetComponents<ResourceTank>();
         float availableResource = 0;
@@ -107,17 +95,17 @@ public class Shipyard : MonoBehaviour {
     public class ShipCost
     {
         public GameObject Prefab;
-        public string name;
+        public string Name;
 
         public int Cost;
         public Resource Type;
         public float Time;
 
-        public string message
+        public string Message
         {
             get
             {
-                return "Construct a " + name + ": " + Cost + " " + Type + ", " + Time + " seconds.";
+                return "Construct a " + Name + ": " + Cost + " " + Type + ", " + Time + " seconds.";
             }
         }
     }
