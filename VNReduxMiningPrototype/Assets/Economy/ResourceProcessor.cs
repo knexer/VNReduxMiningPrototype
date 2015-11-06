@@ -9,6 +9,11 @@ public class ResourceProcessor : MonoBehaviour {
     private Dictionary<Recipe, float> _progress;
     private ResourceTankAggregator _tanks;
 
+    public ResourceProcessor()
+    {
+        _progress = new Dictionary<Recipe, float>();
+    }
+
 	// Use this for initialization
 	void Start () {
         foreach (Recipe recipe in Recipes)
