@@ -12,10 +12,15 @@ public class ConstructionOptionsDisplay : MonoBehaviour
     
     private Dictionary<Shipyard.ShipCost, GameObject> _buttons;
 
+    public ConstructionOptionsDisplay() {
+        _buttons = new Dictionary<Shipyard.ShipCost, GameObject>();
+    }
+
     // Use this for initialization
     void Start()
     {
         Ship.ShipSelected += generateDisplay;
+        hide();
     }
 
     // Update is called once per frame
@@ -26,19 +31,16 @@ public class ConstructionOptionsDisplay : MonoBehaviour
 
     private void generateDisplay(Ship ship)
     {
-        Debug.Log("Generating construction options display for " + ship.shipName);
         Shipyard constructionManager = ship.GetComponent<Shipyard>();
         if (null == constructionManager)
         {
             hide();
             return;
         }
-        Debug.Log("Found " + constructionManager.BuildableShips.Length + " options.");
 
-        // clear the display
-        for (int i = 0; i < gameObject.transform.childCount; i++)
-        {
-            Destroy(gameObject.transform.GetChild(i).gameObject);
+        // clear the displayed buttons
+        foreach (KeyValuePair<Shipyard.ShipCost, GameObject> button in _buttons) {
+            Destroy(button.Value);
         }
 
         show();
@@ -49,8 +51,6 @@ public class ConstructionOptionsDisplay : MonoBehaviour
             GameObject button = Instantiate<GameObject>(ButtonPrefab);
             button.GetComponentInChildren<Text>().text = option.Message;
             button.transform.SetParent(gameObject.transform, false);
-
-            Debug.Log("Creating button with message: " + option.Message);
 
             // gotta declare a new ShipCost inside each loop iteration since C# closures are lexical
             // fuckin gets me every time

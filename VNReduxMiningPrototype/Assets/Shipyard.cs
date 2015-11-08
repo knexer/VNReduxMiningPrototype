@@ -37,7 +37,6 @@ public class Shipyard : MonoBehaviour {
 
     public void tryEnqueueShip(ShipCost ship)
     {
-        Debug.Log("Attempting to enqueue a " + ship.Name);
         // check resource costs
         ResourceTank[] tanks = GetComponents<ResourceTank>();
         float availableResource = 0;
@@ -48,8 +47,7 @@ public class Shipyard : MonoBehaviour {
                 availableResource += tank.Stored;
             }
         }
-
-        Debug.Log("Needed " + ship.Cost + " " + ship.Type + " and found " + availableResource);
+        
         if (availableResource < ship.Cost)
         {
             return;
@@ -105,7 +103,7 @@ public class Shipyard : MonoBehaviour {
         {
             get
             {
-                return "Construct a " + Name + ": " + Cost + " " + Type + ", " + Time + " seconds.";
+                return Name + ": " + Cost + " " + Type + ", " + Time + " seconds.";
             }
         }
     }
