@@ -2,12 +2,17 @@
 using System.Collections;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using System;
 
 // Constructs ships
 public class Shipyard : MonoBehaviour {
 
     public ShipCost[] BuildableShips;
     public Transform SpawnLocation;
+
+    public IEnumerable ConstructionQueue {
+        get { return _constructionQueue; }
+    }
 
     private Queue<ConstructionOrder> _constructionQueue;
     private float _queueCompletionTime;
@@ -28,12 +33,14 @@ public class Shipyard : MonoBehaviour {
         {
             if (Time.time >= _constructionQueue.Peek().EndTime)
             {
-                ShipCost completed = _constructionQueue.Dequeue().Ship;
-                Instantiate(completed.Prefab, SpawnLocation.position, SpawnLocation.rotation);
-                Debug.Log("Construction finished on " + completed.Name);
+                _constructionQueue.Dequeue().CompleteConstruction();
             }
         }
 	}
+
+    void CompleteShip(ShipCost completed) {
+        Instantiate(completed.Prefab, SpawnLocation.position, SpawnLocation.rotation);
+    }
 
     public void tryEnqueueShip(ShipCost ship)
     {
@@ -74,9 +81,10 @@ public class Shipyard : MonoBehaviour {
         ConstructionOrder toEnqueue = new ConstructionOrder() { Ship = ship, StartTime = startTime };
         _constructionQueue.Enqueue(toEnqueue);
         _queueCompletionTime = toEnqueue.EndTime;
+        toEnqueue.OnConstructionCompleted += () => CompleteShip(ship);
     }
 
-    private class ConstructionOrder
+    public class ConstructionOrder
     {
         public ShipCost Ship;
         public float StartTime;
@@ -86,6 +94,12 @@ public class Shipyard : MonoBehaviour {
             {
                 return StartTime + Ship.Time;
             }
+        }
+
+        public event Action OnConstructionCompleted;
+
+        public void CompleteConstruction() {
+            OnConstructionCompleted();
         }
     }
 
