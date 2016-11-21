@@ -85,7 +85,7 @@ public class Shipyard : MonoBehaviour {
         _constructionQueue.Enqueue(toEnqueue);
         _queueCompletionTime = toEnqueue.EndTime;
         toEnqueue.OnConstructionCompleted += () => CompleteShip(ship);
-        toEnqueue.OnConstructionCompleted += () => orderDequeued(toEnqueue);
+        toEnqueue.OnConstructionCompleted += () => { if (orderDequeued != null) orderDequeued(toEnqueue); };
 
         // notify views
         if (orderEnqueued != null)
