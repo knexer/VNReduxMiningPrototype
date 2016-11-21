@@ -49,6 +49,7 @@ public class ConstructionOptionsDisplay : MonoBehaviour
         foreach (Shipyard.ShipCost option in constructionManager.BuildableShips)
         {
             GameObject button = Instantiate<GameObject>(ButtonPrefab);
+            _buttons[option] = button;
             button.GetComponentInChildren<Text>().text = option.Message;
             button.transform.SetParent(gameObject.transform, false);
 
