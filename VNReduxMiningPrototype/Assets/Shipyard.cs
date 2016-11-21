@@ -14,6 +14,9 @@ public class Shipyard : MonoBehaviour {
         get { return _constructionQueue; }
     }
 
+    public event Action<ConstructionOrder> orderEnqueued;
+    public event Action<ConstructionOrder> orderDequeued;
+
     private Queue<ConstructionOrder> _constructionQueue;
     private float _queueCompletionTime;
 
@@ -82,6 +85,13 @@ public class Shipyard : MonoBehaviour {
         _constructionQueue.Enqueue(toEnqueue);
         _queueCompletionTime = toEnqueue.EndTime;
         toEnqueue.OnConstructionCompleted += () => CompleteShip(ship);
+        toEnqueue.OnConstructionCompleted += () => orderDequeued(toEnqueue);
+
+        // notify views
+        if (orderEnqueued != null)
+        {
+            orderEnqueued(toEnqueue);
+        }
     }
 
     public class ConstructionOrder

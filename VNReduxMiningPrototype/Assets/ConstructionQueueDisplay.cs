@@ -11,7 +11,37 @@ public class ConstructionQueueDisplay : MonoBehaviour {
     public GameObject QueueEntryPrefab;
 
     private Queue<GameObject> _queuedItems;
-    private Ship _selectedShip;
+    private Ship _selectedShip
+    {
+        get
+        {
+            return __selectedShip;
+        }
+        set
+        {
+            // deregister from old selection's events
+            if (__selectedShip != null)
+            {
+                Shipyard oldConstructionManager = __selectedShip.GetComponent<Shipyard>();
+                if (oldConstructionManager != null)
+                {
+                    oldConstructionManager.orderEnqueued -= enqueueOrder;
+                    oldConstructionManager.orderDequeued -= dequeueOrder;
+                }
+            }
+
+            // register to new selection's events
+            Shipyard constructionManager = value.GetComponent<Shipyard>();
+            if (constructionManager != null)
+            {
+                constructionManager.orderEnqueued += enqueueOrder;
+                constructionManager.orderDequeued += dequeueOrder;
+            }
+
+            __selectedShip = value;
+        }
+    }
+    private Ship __selectedShip;
 
     public ConstructionQueueDisplay() {
         _queuedItems = new Queue<GameObject>();
@@ -43,16 +73,9 @@ public class ConstructionQueueDisplay : MonoBehaviour {
             return;
         }
 
-        show();
+        // Populate UI to represent initial state of queue
         foreach(Shipyard.ConstructionOrder construction in constructionManager.ConstructionQueue) {
-            GameObject queueEntry = Instantiate<GameObject>(QueueEntryPrefab);
-            queueEntry.transform.SetParent(gameObject.transform, false);
-            queueEntry.GetComponent<Text>().text = construction.Ship.Name;
-
-            _queuedItems.Enqueue(queueEntry);
-            // TODO handle ships added to queue for currently selected ship
-            // TODO handle this in the shipyard
-            construction.OnConstructionCompleted += () => CompleteConstructionFor(ship);
+            enqueueOrder(construction);
         }
     }
 
@@ -66,12 +89,25 @@ public class ConstructionQueueDisplay : MonoBehaviour {
         gameObject.SetActive(true);
     }
 
-    private void CompleteConstructionFor(Ship ship) {
-        if(ship == _selectedShip) {
-            Destroy(_queuedItems.Dequeue());
-            if(_queuedItems.Count == 0) {
-                hide();
-            }
+    private void dequeueOrder(Shipyard.ConstructionOrder construction) {
+        // TODO stop assuming the first item in the queue was finished
+        Destroy(_queuedItems.Dequeue());
+        if(_queuedItems.Count == 0) {
+            hide();
+        }
+    }
+
+    private void enqueueOrder(Shipyard.ConstructionOrder construction)
+    {
+        GameObject queueEntry = Instantiate<GameObject>(QueueEntryPrefab);
+        queueEntry.transform.SetParent(gameObject.transform, false);
+        queueEntry.GetComponent<Text>().text = construction.Ship.Name;
+
+        _queuedItems.Enqueue(queueEntry);
+
+        if (_queuedItems.Count == 1)
+        {
+            show();
         }
     }
 }
